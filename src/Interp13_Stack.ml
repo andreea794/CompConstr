@@ -76,24 +76,23 @@ and compile_arith (env, arith) rest =
 and interp_bool (env, bool) =
   match bool with None | Int _ -> assert false | Bool bool ->
   function
-  | [] -> (failwith "hole")
-  | Not :: rest -> (failwith "hole")
-  | And_with bool2 :: rest -> (failwith "hole")
-  | Or_with bool2 :: rest -> (failwith "hole")
-  | Compile_then_and bool_exp :: rest -> (failwith "hole")
-  | Compile_then_or bool_exp :: rest -> (failwith "hole")
-  | Branch (true_, false_) :: rest -> (failwith "hole")
-  | Loop (body, loop) :: rest -> (failwith "hole")
-  | _ -> assert false
+  | [] -> (env, Bool bool)
+  | Not :: rest -> interp_bool (env, Bool (not bool)) rest
+  | And_with bool2 :: rest -> interp_bool (env, Bool (bool && bool2)) rest
+  | Or_with bool2 :: rest -> interp_bool (env, Bool (bool || bool2)) rest
+  | Compile_then_and bool_exp :: rest -> compile_bool (env, bool_exp) (And_with bool :: rest)
+  | Compile_then_or bool_exp :: rest -> compile_bool (env, bool_exp) (Or_with bool :: rest)
+  | Branch (true_, false_) :: rest -> if bool then compile_statement (env, true_) rest else compile_statement (env, false_) rest
+  | Loop (body, loop) :: rest -> if bool then compile_statement (env, body) (Compile_then loop :: rest) else compile_statement (env, loop) rest
 
 and compile_bool (env, bool_exp) rest =
   match bool_exp with
-  | True -> (failwith "hole")
-  | False -> (failwith "hole")
-  | Not exp -> (failwith "hole")
-  | And (first, second) -> (failwith "hole")
-  | Or (first, second) -> (failwith "hole")
-  | Bool_op (first, op, second) -> (failwith "hole")
+  | True -> interp_bool (env, Bool true) rest
+  | False -> interp_bool (env, Bool false) rest
+  | Not exp -> compile_bool (env, exp) Not :: rest
+  | And (first, second) -> compile_bool (env, first) Compile_then_and second :: rest
+  | Or (first, second) -> compile_bool (env, first) Compile_then_or second :: rest
+  | Bool_op (first, op, second) -> compile
 
 and interp_statement env = function
   | [] -> (failwith "hole")

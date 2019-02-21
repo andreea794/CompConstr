@@ -42,10 +42,11 @@ let rec eval_bool (env, bool) return =
   | Bool_op (first, op, second) ->
     eval_arith (env, first) (fun (first_env, first_val) ->
 		eval_arith (first_env, second) (fun (second_env, second_val) ->
-		    (match op with
-		    | Lt -> return (second_env, (first_val < second_val))
-		    | Gt -> return (second_env, (first_val > second_val))
-		    | Eq -> return (second_env, (first_val = second_val)))))
+		    let op = (match op with
+		    | Lt -> (<)
+		    | Gt -> (>)
+		    | Eq -> (=) in
+			return (second_env, (op (first_val, second_val))))))
 ;;
 
 let rec eval_statement (env, statement) return =

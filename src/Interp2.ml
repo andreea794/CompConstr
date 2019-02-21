@@ -40,8 +40,8 @@ let rec compile_bool = function
     | Eq -> (compile_arith first) @ (compile_arith second) @ [Equals]
 
 let rec compile_statement = function
-  | Skip ->  []
-  | Assign (var, exp) -> [Assign var] @ (compile_arith exp)
+  | Skip -> []
+  | Assign (var, exp) -> (compile_arith exp) @ [Assign var]
   | Seq (first, second) -> compile_statement first @ compile_statement second
   | If (cond, true_, false_) -> (compile_bool cond) @ [If (compile_statement true_, compile_statement false_)]
   | While (cond, body) -> let result = compile_bool cond in

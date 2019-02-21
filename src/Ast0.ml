@@ -1,8 +1,9 @@
 type arith_exp =
   | Var of string
-  | Int of int
+  | Arith_Int of int
   | Plus of arith_exp * arith_exp
   | Times of arith_exp * arith_exp
+  | Arith_Fun of (int -> int)
 ;;
 
 type bool_op =
@@ -26,6 +27,9 @@ type statement =
   | Seq of statement * statement
   | If of bool_exp * statement * statement
   | While of bool_exp * statement
+  | LetFun of string * lambda * statement
+  | LetRecFun of string * lambda * statement
+and lambda = string * arith_exp
 ;;
 
 
