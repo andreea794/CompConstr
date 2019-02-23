@@ -45,8 +45,8 @@ let rec eval_bool (env, bool) return =
 		    let op = (match op with
 		    | Lt -> (<)
 		    | Gt -> (>)
-		    | Eq -> (=) in
-			return (second_env, (op (first_val, second_val))))))
+		    | Eq -> (=)) in
+			return (second_env, op (first_val, second_val))))
 ;;
 
 let rec eval_statement (env, statement) return =

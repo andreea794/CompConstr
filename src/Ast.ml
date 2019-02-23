@@ -28,5 +28,3 @@ type statement =
   | While of bool_exp * statement
 ;;
 
-
-
